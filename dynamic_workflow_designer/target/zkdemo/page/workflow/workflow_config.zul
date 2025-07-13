@@ -1,0 +1,109 @@
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:n="native"
+    xmlns:x="http://www.zkoss.org/2005/zk">
+    <window title="Cấu hình và Sơ đồ Quy trình xử lý văn bản" border="normal" width="100%" height="100%"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.WorkflowConfigViewModel')"
+            apply="org.zkoss.bind.BindComposer">
+
+        <vlayout spacing="20px" style="padding: 20px;">
+            <div style="max-height: 550px; overflow-y: auto;">
+
+            <!-- Header -->
+            <hbox spacing="10px">
+                <label value="Tên Workflow:"/>
+                <textbox value="@bind(vm.workflowName)" width="300px"/>
+                <button label="💾 Lưu quy trình" onClick="@command('saveWorkflow')"/>
+                <button label="➕ Thêm bước mới" onClick="@command('addStep')"/>
+            </hbox>
+
+            <!-- Danh sách bước -->
+            <listbox model="@bind(vm.steps)"
+                     selectedItem="@bind(vm.selectedStep)"
+                     width="100%" height="300px"
+                     droppable="true"
+                     onDrop="@command('reorder', dragged=event.dragged, dropped=event.target)">
+                <listhead>
+                    <listheader label="Thứ tự" width="60px"/>
+                    <listheader label="Tên bước"/>
+                    <listheader label="Vai trò"/>
+                    <listheader label="Thao tác" width="100px"/>
+                </listhead>
+                <template name="model" var="step">
+                    <listitem draggable="true">
+                        <listcell label="@load(step.stepOrder.toString())"/>
+                        <listcell>
+                            <textbox value="@bind(step.stepName)" width="100%"/>
+                        </listcell>
+                        <listcell>
+                            <combobox model="@bind(vm.roles)" selectedItem="@bind(step.role)" width="100%">
+                                <template name="model" var="r">
+                                    <comboitem label="@load(r)" value="@load(r)"/>
+                                </template>
+                            </combobox>
+                        </listcell>
+                        <listcell>
+                            <button label="🗑 Xóa" onClick="@command('deleteStep', step=step)"/>
+                        </listcell>
+                    </listitem>
+                </template>
+            </listbox>
+
+            <!-- Sơ đồ trực quan -->
+            <separator/>
+            <label value="🔁 Sơ đồ trực quan Workflow" style="font-weight:bold; color:#2e7d32;"/>
+
+            <vlayout id="workflowContainer" spacing="40px" style="padding: 40px; overflow:auto;"
+                     children="@bind(vm.steps)">
+                <template name="children" var="step">
+                    <div id="@load(step.stepOrder)" class="step-box"
+                         style="width:160px;height:80px;padding:10px;
+                    border:1px solid #aaa;border-radius:10px;
+                    background:#e0f7fa;text-align:center;">
+                        <label value="@load(step.stepName)" style="font-weight:bold"/>
+                        <separator/>
+                        <label value="@load(step.role)" style="font-size:12px"/>
+                    </div>
+                </template>
+            </vlayout>
+            </div>
+        </vlayout>
+
+        <!-- LeaderLine -->
+        <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7"></script>
+        <script type="text/javascript"><![CDATA[
+    function refreshWorkflowLines() {
+        setTimeout(drawWorkflowLines, 600);
+    }
+
+    function drawWorkflowLines() {
+        if (!window.LeaderLine) return;
+
+        if (window.leaderLines) {
+            window.leaderLines.forEach(l => l.remove());
+        }
+        window.leaderLines = [];
+
+        const container = document.getElementById('workflowContainer');
+        if (!container) return;
+
+        const boxes = document.querySelectorAll('.step-box');
+        for (let i = 0; i < boxes.length - 1; i++) {
+            const from = boxes[i];
+            const to = boxes[i + 1];
+            if (from && to) {
+                const line = new LeaderLine(from, to, {
+                    color: '#0288d1',
+                    size: 2,
+                    startPlug: 'disc',
+                    endPlug: 'arrow3',
+                    path: 'straight'
+                });
+                window.leaderLines.push(line);
+            }
+        }
+    }
+
+    zk.afterMount(refreshWorkflowLines);
+]]></script>
+    </window>
+</zk>

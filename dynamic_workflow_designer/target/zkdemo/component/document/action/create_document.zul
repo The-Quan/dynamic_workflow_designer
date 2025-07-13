@@ -1,0 +1,145 @@
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <style>
+        .form-label {
+        font-weight: bold;
+        width: 150px;
+        min-width: 150px;
+        display: inline-block;
+        }
+
+        .form-input {
+        width: 100%;
+        }
+
+        .section {
+        padding: 30px;
+        margin: 60px auto 20px auto;
+        }
+
+        .title-bar {
+        font-size: 24px;
+        font-weight: bold;
+        color: #0a65cc;
+        margin-bottom: 30px;
+        text-align: center;
+        }
+
+        .btn-primary {
+        background-color: #0a65cc;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        padding: 10px 20px;
+        font-weight: bold;
+        }
+
+        .btn-primary:hover {
+        background-color: #084a9b;
+        }
+
+        .file-label {
+        font-style: italic;
+        color: gray;
+        }
+
+        .h-align {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        }
+
+        .v-align-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        }
+
+        .col {
+        width: 48%;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        }
+
+        .hlayout-wrap {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        }
+        .h-align, .v-align-top {
+        margin-bottom: 20px;
+        }
+
+    </style>
+
+    <window title="Tạo Văn Bản Mới" border="normal"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.CreateDocumentViewModel')"
+            width="100%" height="100%" apply="org.zkoss.bind.BindComposer">
+
+        <vlayout class="section">
+
+            <div sclass="hlayout-wrap">
+                <div sclass="col">
+                    <div sclass="h-align">
+                        <label class="form-label" value="Số hiệu:"/>
+                        <textbox class="form-input" value="@bind(vm.document.soHieu)"/>
+                    </div>
+                    <div sclass="h-align">
+                        <label class="form-label" value="Tiêu đề:"/>
+                        <textbox class="form-input" value="@bind(vm.document.tieuDe)"/>
+                    </div>
+                    <div sclass="h-align">
+                        <label class="form-label" value="Người ký:"/>
+                        <textbox class="form-input" value="@bind(vm.document.nguoiKy)"/>
+                    </div>
+
+                    <div sclass="h-align" visible="@load(vm.document.vanBanDen)">
+                        <label class="form-label" value="Nơi gửi:"/>
+                        <textbox class="form-input" value="@bind(vm.document.donViGui)"/>
+                    </div>
+
+                    <div sclass="h-align" visible="@load(not vm.document.vanBanDen)">
+                        <label class="form-label" value="Nơi nhận:"/>
+                        <textbox class="form-input" value="@bind(vm.document.donViNhan)"/>
+                    </div>
+                    <div sclass="h-align">
+                        <label class="form-label" value="Văn bản đến:"/>
+                        <checkbox checked="@bind(vm.document.vanBanDen)"/>
+                    </div>
+                </div>
+                <div sclass="col">
+                    <div sclass="h-align">
+                        <label class="form-label" value="Loại văn bản:"/>
+                        <combobox class="form-input" value="@bind(vm.document.loaiVanBan)" autodrop="true">
+                            <comboitem label="Báo cáo" value="Báo cáo"/>
+                            <comboitem label="Công văn" value="Công văn"/>
+                            <comboitem label="Tờ trình" value="Tờ trình"/>
+                        </combobox>
+                    </div>
+                    <div sclass="h-align">
+                        <label class="form-label" value="Người soạn thảo:"/>
+                        <textbox class="form-input" value="@bind(vm.document.nguoiSoanThao)" readonly="true"/>
+                    </div>
+                    <div sclass="h-align">
+                        <label class="form-label" value="Tệp đính kèm:"/>
+                        <fileupload label="Chọn file" upload="true" onUpload="@command('uploadFile')"/>
+                        <label value="@load(vm.uploadedFileName)" class="file-label"/>
+                    </div>
+                    <div sclass="v-align-top">
+                        <label class="form-label" value="Nội dung:"/>
+                        <textbox class="form-input" multiline="true" rows="3" value="@bind(vm.document.noiDung)"/>
+                    </div>
+                    <div sclass="v-align-top">
+                        <label class="form-label" value="Ghi chú:"/>
+                        <textbox class="form-input" multiline="true" rows="3" value="@bind(vm.document.ghiChu)"/>
+                    </div>
+                </div>
+            </div>
+
+            <hbox width="100%" pack="center" style="margin-top: 25px;">
+                <button label="Lưu văn bản" onClick="@command('submit')" class="btn-primary"/>
+                <button label=" Quay lại" onClick="@command('goBack')" class="btn-primary"/>
+            </hbox>
+        </vlayout>
+    </window>
+</zk>

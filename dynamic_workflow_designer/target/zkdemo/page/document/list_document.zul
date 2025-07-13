@@ -1,0 +1,122 @@
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <window title="Danh sách văn bản"
+            border="normal"
+            width="100%"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.ListDocumentViewModel')"
+            apply="org.zkoss.bind.BindComposer">
+
+        <vlayout spacing="10px" style="padding: 0 10px;">
+
+            <hbox width="100%" pack="end" spacing="10px">
+                <button label="Bộ lọc nâng cao" onClick="@command('toggleFilter')" />
+                <button label="Tạo văn bản mới" onClick="@command('goToCreateDocument')" width="200px" />
+            </hbox>
+
+            <vlayout spacing="10px" width="100%" visible="@load(vm.showFilter)">
+
+                <hlayout spacing="10px" valign="middle" sclass="filter-bar">
+                    <textbox value="@bind(vm.filterSoHieu)" placeholder="Số hiệu" sclass="filter-input" />
+                    <textbox value="@bind(vm.filterTieuDe)" placeholder="Tiêu đề" sclass="filter-input" />
+                    <combobox value="@bind(vm.filterLoaiVB)" sclass="filter-input" placeholder="Loại VB">
+                        <comboitem label="-- Tất cả --" value="" />
+                        <comboitem label="Báo cáo" value="Báo cáo" />
+                        <comboitem label="Công văn" value="Công văn" />
+                        <comboitem label="Tờ trình" value="Tờ trình" />
+                    </combobox>
+                    <combobox value="@bind(vm.filterTrangThai)" sclass="filter-input" placeholder="Trạng thái">
+                        <comboitem label="-- Tất cả --" value="" />
+                        <comboitem label="Chờ xử lý" value="CHO_XU_LY" />
+                        <comboitem label="Đang xử lý" value="DANG_XU_LY" />
+                        <comboitem label="Hoàn thành" value="HOAN_THANH" />
+                        <comboitem label="Quá hạn" value="QUA_HAN" />
+                    </combobox>
+                </hlayout>
+                <hlayout spacing="10px" valign="middle" sclass="filter-bar">
+                    <datebox value="@bind(vm.deadline)" format="dd/MM/yyyy" placeholder="Hạn xử lý" sclass="filter-input" />
+                    <datebox value="@bind(vm.ngayBanHanhFrom)" format="dd/MM/yyyy" placeholder="Từ ngày ban hành" sclass="filter-input" />
+                    <datebox value="@bind(vm.ngayBanHanhTo)" format="dd/MM/yyyy" placeholder="Đến ngày ban hành" sclass="filter-input" />
+                </hlayout>
+
+                <hbox spacing="10px" pack="start">
+                    <button label="Tìm" onClick="@command('search')" sclass="btn-primary" />
+                    <button label="Xóa" onClick="@command('resetFilters')" sclass="btn-secondary" />
+                </hbox>
+
+            </vlayout>
+
+            <div style="max-height: 550px; overflow-y: auto;">
+                <listbox model="@bind(vm.documents)" mold="paging" pageSize="10" width="100%">
+                    <listhead>
+                        <listheader label="Số hiệu" />
+                        <listheader label="Tiêu đề" />
+                        <listheader label="Loại VB" />
+                        <listheader label="Trạng Thái" />
+                        <listheader label="Ngày ban hành" />
+                        <listheader label="Thời gian còn lại" />
+                        <listheader label="Hành động" width="220px" />
+                    </listhead>
+                    <template name="model">
+                        <listitem onClick="@command('viewDetail', doc=each)">
+                            <attribute name="value">@load(each)</attribute>
+                            <listcell label="@load(each.soHieu)" />
+                            <listcell label="@load(each.tieuDe)" />
+                            <listcell label="@load(each.loaiVanBan)" />
+                            <listcell label="@load(each.trangThai)" />
+                            <listcell label="@load(each.ngayBanHanh) @converter('formatedDate', format='dd/MM/yyyy')" />
+                            <listcell>
+                                <label value="@load(vm.formatDeadline(each.deadline))"
+                                       style="@load(vm.getDeadlineStyle(each.deadline))" />
+                            </listcell>
+                            <listcell>
+                                <hlayout spacing="5px">
+                                    <button sclass="icon-button" iconSclass="z-icon-check"
+                                            tooltiptext="Phê duyệt"
+                                            onClick="@command('approve', doc=each)" />
+
+                                    <button sclass="icon-button" iconSclass="z-icon-times"
+                                            tooltiptext="Từ chối"
+                                            onClick="@command('reject', doc=each)" />
+
+                                    <button sclass="icon-button" iconSclass="z-icon-share"
+                                            tooltiptext="Chuyển xử lý"
+                                            onClick="@command('delegate', doc=each)" />
+                                </hlayout>
+                            </listcell>
+                        </listitem>
+                    </template>
+                </listbox>
+            </div>
+
+            <window id="delegatePopup" title="Chuyển xử lý văn bản"
+                    visible="@load(vm.showDelegatePopup)"
+                    onClose="@command('closeDelegatePopup')"
+                    mode="modal"
+                    width="30%">
+
+                <vlayout spacing="10px" style="padding: 15px;">
+                    <label value="Chọn người dùng để chuyển xử lý:" style="font-weight: bold;" />
+
+                    <listbox model="@bind(vm.userList)" height="300px" width="100%">
+                        <listhead>
+                            <listheader label="Tên người dùng" width="70%" />
+                            <listheader label="Hành động" width="30%" />
+                        </listhead>
+                        <template name="model">
+                            <listitem>
+                                <listcell label="@load(each.username)" />
+                                <listcell>
+                                    <button label="Chuyển" onClick="@command('delegateTo', user=each)" />
+                                </listcell>
+                            </listitem>
+                        </template>
+                    </listbox>
+
+                    <hbox spacing="10px" pack="center">
+                        <button label="Đóng" onClick="@command('closeDelegatePopup')" />
+                    </hbox>
+                </vlayout>
+            </window>
+
+        </vlayout>
+    </window>
+</zk>

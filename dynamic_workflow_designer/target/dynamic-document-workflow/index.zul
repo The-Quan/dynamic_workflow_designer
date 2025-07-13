@@ -1,0 +1,30 @@
+<window title="Đăng nhập"
+		border="normal" width="400px"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('com.example.zkproject.viewmodel.LoginViewModel')"
+		position="center,center"
+		mode="overlapped"
+		style="background: #f9f9f9; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+
+	<vlayout spacing="12px" style="padding: 25px;">
+		<label value="Tên đăng nhập:" style="font-weight: bold;"/>
+		<textbox value="@bind(vm.username)" placeholder="Nhập username" width="100%"
+				 style="padding: 6px; border-radius: 5px; border: 1px solid #ccc;" />
+
+		<label value="Mật khẩu:" style="font-weight: bold;"/>
+		<textbox type="password" value="@bind(vm.password)" placeholder="Nhập password" width="100%"
+				 style="padding: 6px; border-radius: 5px; border: 1px solid #ccc;" />
+
+		<hlayout spacing="10px" style="margin-top: 10px;">
+			<button label="Đăng nhập"
+					onClick="@command('login')"
+					width="100%"
+					style="flex: 1; background-color: #4CAF50; color: white; border-radius: 5px;" />
+
+			<button label="Đăng ký"
+					onClick="@command('goToRegister')"
+					width="100%"
+					style="flex: 1; background-color: #2196F3; color: white; border-radius: 5px;" />
+		</hlayout>
+	</vlayout>
+</window>

@@ -1,0 +1,7 @@
+com\example\zkproject\viewmodel\RegisterViewModel.class
+com\example\zkproject\viewmodel\LoginViewModel.class
+com\example\zkproject\repository\UserRepository.class
+com\example\zkproject\viewmodel\HomeViewModel.class
+com\example\zkproject\repository\DBConnection.class
+com\example\zkproject\MyViewModel.class
+com\example\zkproject\model\User.class

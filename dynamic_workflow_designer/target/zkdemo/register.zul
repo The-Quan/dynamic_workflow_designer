@@ -1,0 +1,29 @@
+<window title="Đăng ký tài khoản" border="normal" width="400px"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.example.zkproject.viewmodel.RegisterViewModel')"
+        style="margin: 100px auto; padding: 20px;">
+
+    <vlayout spacing="10px">
+        <label value="Tên đăng nhập:"/>
+        <textbox value="@bind(vm.username)" width="100%"/>
+
+        <label value="Mật khẩu:"/>
+        <textbox type="password" value="@bind(vm.password)" width="100%"/>
+
+        <label value="Xác nhận mật khẩu:"/>
+        <textbox type="password" value="@bind(vm.confirmPassword)" width="100%"/>
+
+        <label value="Chọn vai trò:"/>
+        <combobox model="@bind(vm.roles)"
+                  selectedItem="@bind(vm.selectedRole)"
+                  width="100%">
+            <template name="model">
+                <comboitem label="${each}" value="${each}" />
+            </template>
+        </combobox>
+
+        <button label="Đăng ký" width="100%" onClick="@command('register')"/>
+        <separator/>
+        <a href="index.zul">Đã có tài khoản? Đăng nhập</a>
+    </vlayout>
+</window>

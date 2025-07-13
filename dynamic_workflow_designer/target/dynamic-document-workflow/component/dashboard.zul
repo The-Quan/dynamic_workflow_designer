@@ -1,0 +1,26 @@
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:n="native"
+    xmlns:bind="http://www.zkoss.org/2005/zk/client/bind">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <window apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.DashboardViewModel')"
+            width="100%" border="none">
+
+        <vlayout spacing="10px" style="padding: 20px;">
+            <checkbox label="Dashboard" checked="true" disabled="true"/>
+            <separator height="10px"/>
+
+            <label value="•  Thống kê số lượng văn bản theo trạng thái, loại văn bản."
+                   style="font-size: 15px; margin-left: 10px;"/>
+
+            <!-- Sửa tại đây -->
+            <n:div style="max-width: 80%; margin: auto;">
+                <n:canvas id="statusChart" width="500" height="250" style="border: 1px solid #ccc;"></n:canvas>
+            </n:div>
+
+
+        </vlayout>
+    </window>
+</zk>

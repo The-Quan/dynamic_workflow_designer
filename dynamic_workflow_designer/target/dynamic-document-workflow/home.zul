@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk xmlns="http://www.zkoss.org/2005/zul">
+
+    <window apply="org.zkoss.bind.BindComposer"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.HomeViewModel')"
+            width="100%" height="100%">
+
+        <borderlayout>
+
+            <north size="100px" style="background-color:#0a65cc;">
+                <grid width="100%" style="padding: 10px; border: none; background-color:#0a65cc;">
+                    <columns>
+                        <column width="70%"/>
+                        <column width="30%" align="right"/>
+                    </columns>
+                    <rows>
+                        <row style="background-color:#0a65cc; border: none;">
+                            <label value="Hệ thống Quản lý Văn bản"
+                                   style="font-size:18px; font-weight:bold; margin-left: 10px; color: white; background-color:#0a65cc;"/>
+                            <button label="Đăng xuất"
+                                    onClick="@command('logout')"
+                                    sclass="btn btn-logout"
+                                    style="background-color: transparent; color: white; border: none; font-weight: bold; margin-right: 10px;"/>
+                        </row>
+                    </rows>
+                </grid>
+            </north>
+
+
+            <west size="250px" splittable="true" collapsible="true">
+                <tree width="100%" mold="default" style="border: none;">
+                    <treecols>
+                        <treecol label="Menu" width="100%"/>
+                    </treecols>
+                    <treechildren>
+                        <treeitem>
+                            <treerow>
+                                <treecell onClick="@command('goToDashboard')">
+                                    <hlayout spacing="8px">
+                                        <label value="Dashboard"/>
+                                    </hlayout>
+                                </treecell>
+                            </treerow>
+                        </treeitem>
+
+                        <treeitem>
+                            <treerow>
+                                <treecell onClick="@command('goToListDocument')">
+                                    <hlayout spacing="8px">
+                                        <label value="Danh sách văn bản"/>
+                                    </hlayout>
+                                </treecell>
+                            </treerow>
+                        </treeitem>
+
+                        <treeitem visible="@load(vm.role.toString() eq 'LANH_DAO')">
+                            <treerow>
+                                <treecell onClick="@command('goToListUser')">
+                                    <hlayout spacing="8px">
+                                        <label value="Quản lý người dùng"/>
+                                    </hlayout>
+                                </treecell>
+                            </treerow>
+                        </treeitem>
+
+                    </treechildren>
+                </tree>
+            </west>
+
+            <center>
+                <include src="@load(vm.pageToInclude)"/>
+            </center>
+        </borderlayout>
+    </window>
+
+</zk>

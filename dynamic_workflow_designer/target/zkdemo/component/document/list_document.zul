@@ -1,0 +1,105 @@
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <window title="Danh sách văn bản"
+            border="normal"
+            width="100%"
+            viewModel="@id('vm') @init('com.example.zkproject.viewmodel.ListDocumentViewModel')"
+            apply="org.zkoss.bind.BindComposer">
+
+        <vlayout spacing="10px" style="padding: 0 10px;">
+
+            <hbox width="100%" pack="end" spacing="10px">
+                <button label="Bộ lọc nâng cao" onClick="@command('toggleFilter')" />
+                <button label="Tạo văn bản mới" onClick="@command('goToCreateDocument')" width="200px" />
+            </hbox>
+
+            <vlayout spacing="10px" width="100%" visible="@load(vm.showFilter)">
+                <hlayout width="100%" valign="middle" spacing="10px" sclass="filter-bar">
+                    <textbox value="@bind(vm.filterSoHieu)" placeholder="Số hiệu" sclass="filter-input"/>
+                    <textbox value="@bind(vm.filterTieuDe)" placeholder="Tiêu đề" sclass="filter-input"/>
+                    <combobox value="@bind(vm.filterLoaiVB)" sclass="filter-input" placeholder="Loại VB">
+                        <comboitem label="-- Tất cả --" value=""/>
+                        <comboitem label="Báo cáo" value="Báo cáo"/>
+                        <comboitem label="Công văn" value="Công văn"/>
+                        <comboitem label="Tờ trình" value="Tờ trình"/>
+                    </combobox>
+                    <textbox value="@bind(vm.filterNguoiKy)" placeholder="Người ký" sclass="filter-input"/>
+                    <textbox value="@bind(vm.filterTrangThai)" placeholder="Trạng thái" sclass="filter-input"/>
+                    <hbox spacing="5px">
+                        <button label="Tìm" onClick="@command('search')" sclass="btn-primary"/>
+                        <button label="Xóa" onClick="@command('resetFilters')" sclass="btn-secondary"/>
+                    </hbox>
+                </hlayout>
+            </vlayout>
+            <div style="max-height: 550px; overflow-y: auto;">
+            <listbox model="@bind(vm.documents)" mold="paging" pageSize="10" width="100%">
+                <listhead>
+                    <listheader label="Số hiệu" />
+                    <listheader label="Tiêu đề" />
+                    <listheader label="Loại VB" />
+                    <listheader label="Người ký" />
+                    <listheader label="Trạng Thái" />
+                    <listheader label="Ngày tạo" />
+                    <listheader label="Hành động" width="220px" />
+                </listhead>
+                <template name="model">
+                    <listitem onClick="@command('viewDetail', doc=each)">
+                        <attribute name="value">@load(each)</attribute>
+                        <listcell label="@load(each.soHieu)" />
+                        <listcell label="@load(each.tieuDe)" />
+                        <listcell label="@load(each.loaiVanBan)" />
+                        <listcell label="@load(each.nguoiKy)" />
+                        <listcell label="@load(each.trangThai)" />
+                        <listcell label="@load(each.ngayTao)" />
+                        <listcell>
+                            <hlayout spacing="5px">
+                                <button sclass="icon-button" iconSclass="z-icon-check"
+                                        tooltiptext="Phê duyệt"
+                                        onClick="@command('approve', doc=each)" />
+
+                                <button sclass="icon-button" iconSclass="z-icon-times"
+                                        tooltiptext="Từ chối"
+                                        onClick="@command('reject', doc=each)" />
+
+                                <button sclass="icon-button" iconSclass="z-icon-share"
+                                        tooltiptext="Chuyển xử lý"
+                                        onClick="@command('delegate', doc=each)" />
+                            </hlayout>
+                        </listcell>
+                    </listitem>
+                </template>
+            </listbox>
+            </div>
+            <window id="delegatePopup" title="Chuyển xử lý văn bản"
+                    visible="@load(vm.showDelegatePopup)"
+                    onClose="@command('closeDelegatePopup')"
+                    mode="modal"
+                    width="30%">
+
+                <vlayout spacing="10px" style="padding: 15px;">
+                    <label value="Chọn người dùng để chuyển xử lý:" style="font-weight: bold;" />
+
+                    <listbox model="@bind(vm.userList)" height="300px" width="100%">
+                        <listhead>
+                            <listheader label="Tên người dùng" width="70%" />
+                            <listheader label="Hành động" width="30%" />
+                        </listhead>
+                        <template name="model">
+                            <listitem>
+                                <listcell label="@load(each.username)" />
+                                <listcell>
+                                    <button label="Chuyển" onClick="@command('delegateTo', user=each)" />
+                                </listcell>
+                            </listitem>
+                        </template>
+                    </listbox>
+
+                    <hbox spacing="10px" pack="center">
+                        <button label="Đóng" onClick="@command('closeDelegatePopup')" />
+                    </hbox>
+                </vlayout>
+            </window>
+
+        </vlayout>
+    </window>
+</zk>
+
